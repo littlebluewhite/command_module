@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"new_command/app/database"
 	"new_command/config"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"time"
@@ -69,15 +71,31 @@ func main() {
 	var sb strings.Builder
 	sb.WriteString(":")
 	sb.WriteString(ServerConfig.Port)
-	s := &http.Server{
+	srv := &http.Server{
 		Addr:           sb.String(),
 		Handler:        r,
 		ReadTimeout:    ServerConfig.ReadTimeout * time.Second,
 		WriteTimeout:   ServerConfig.WriteTimeout * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	err = s.ListenAndServe()
-	if err != nil {
-		log.Fatal("Server can not run: " + err.Error())
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
 	}
+	log.Println("Server exiting")
 }
