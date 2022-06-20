@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 	"log"
+	"time"
 )
 
 type DBConfig struct {
@@ -11,6 +12,12 @@ type DBConfig struct {
 	User     string `mapstructure:"DB_USER"`
 	Password string `mapstructure:"DB_PASSWORD"`
 	DB       string `mapstructure:"DB_DB"`
+}
+
+type ServerConfig struct {
+	Port         string        `mapstructure:"PORT"`
+	ReadTimeout  time.Duration `mapstructure:"READ_TIMEOUT"`
+	WriteTimeout time.Duration `mapstructure:"WRITE_TIMEOUT"`
 }
 
 // LoadConfig 讀取.env環境變數檔

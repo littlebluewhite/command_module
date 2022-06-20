@@ -6,14 +6,18 @@ import (
 	"log"
 	"net/http"
 	"new_command/app/database"
+	"new_command/config"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 var (
-	Trace *log.Logger
-	Info  *log.Logger
-	Error *log.Logger
+	Trace        *log.Logger
+	Info         *log.Logger
+	Error        *log.Logger
+	ServerConfig *config.ServerConfig
 )
 
 // 初始化配置
@@ -29,6 +33,11 @@ func init() {
 	Trace = log.New(os.Stdout, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Info = log.New(io.MultiWriter(file, os.Stdout), "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Error = log.New(io.MultiWriter(file, os.Stdout), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
+
+func init() {
+	//server config
+	ServerConfig = config.LoadConfig[*(config.ServerConfig)]("./evn", "server")
 }
 
 func main() {
@@ -57,5 +66,18 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.Run(":5487")
+	var sb strings.Builder
+	sb.WriteString(":")
+	sb.WriteString(ServerConfig.Port)
+	s := &http.Server{
+		Addr:           sb.String(),
+		Handler:        r,
+		ReadTimeout:    ServerConfig.ReadTimeout * time.Second,
+		WriteTimeout:   ServerConfig.WriteTimeout * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	err = s.ListenAndServe()
+	if err != nil {
+		log.Fatal("Server can not run: " + err.Error())
+	}
 }
