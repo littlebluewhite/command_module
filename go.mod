@@ -7,6 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/pressly/goose/v3 v3.5.3
 	github.com/spf13/viper v1.12.0
+	gorm.io/datatypes v1.0.6
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.6
 )

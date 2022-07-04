@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `time_template`
+CREATE TABLE IF NOT EXISTS  `time_templates`
 (
     `id`               int PRIMARY KEY AUTO_INCREMENT,
     `name`             varchar(255) UNIQUE NOT NULL,
@@ -10,24 +10,24 @@ CREATE TABLE IF NOT EXISTS  `time_template`
     `start_time`       time                NOT NULL,
     `end_time`         time                NOT NULL,
     `interval_seconds` int,
-    `updated_at`       datetime,
+    `updated_at`       datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `created_at`       datetime DEFAULT (now())
 );
 -- +goose StatementEnd
 
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `weekly_repeat`
+CREATE TABLE IF NOT EXISTS  `weekly_repeats`
 (
     `id`               int PRIMARY KEY AUTO_INCREMENT,
-    `time_template_id` int,
+    `time_template_id` int UNIQUE NOT NULL,
     `weekly_condition` json
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `monthly_repeat`
+CREATE TABLE IF NOT EXISTS  `monthly_repeats`
 (
     `id`                    int PRIMARY KEY AUTO_INCREMENT,
-    `time_template_id`      int,
+    `time_template_id` int UNIQUE NOT NULL,
     `first_week_condition`  json,
     `second_week_condition` json,
     `third_week_condition`  json,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS  `monthly_repeat`
 -- +goose StatementEnd
 
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `schedule`
+CREATE TABLE IF NOT EXISTS  `schedules`
 (
     `id`               int PRIMARY KEY AUTO_INCREMENT,
     `name`             varchar(255) UNIQUE NOT NULL,
@@ -47,25 +47,25 @@ CREATE TABLE IF NOT EXISTS  `schedule`
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `schedule_command_ref`
+CREATE TABLE IF NOT EXISTS  `schedule_command`
 (
     `schedule_id` int,
     `command_id`  int
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `command`
+CREATE TABLE IF NOT EXISTS  `commands`
 (
     `id`          int PRIMARY KEY AUTO_INCREMENT,
     `name`        varchar(255) UNIQUE NOT NULL,
     `protocol`    ENUM ('http', 'socket', 'websocket', 'snmp'),
     `description` varchar(255),
-    `updated_at`  datetime,
+    `updated_at`  datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `created_at`  datetime DEFAULT (now())
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `https_command`
+CREATE TABLE IF NOT EXISTS  `https_commands`
 (
     `id`                 int PRIMARY KEY AUTO_INCREMENT,
     `command_id`         int UNIQUE,
@@ -79,28 +79,28 @@ CREATE TABLE IF NOT EXISTS  `https_command`
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `header_template`
+CREATE TABLE IF NOT EXISTS  `header_templates`
 (
     `id`   int PRIMARY KEY AUTO_INCREMENT,
     `data` json
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `snmp_command`
+CREATE TABLE IF NOT EXISTS  `snmp_commands`
 (
     `id`         int PRIMARY KEY AUTO_INCREMENT,
     `command_id` int UNIQUE
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `socket_command`
+CREATE TABLE IF NOT EXISTS  `socket_commands`
 (
     `id`         int PRIMARY KEY AUTO_INCREMENT,
     `command_id` int UNIQUE
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS  `websocket_command`
+CREATE TABLE IF NOT EXISTS  `websocket_commands`
 (
     `id`         int PRIMARY KEY AUTO_INCREMENT,
     `command_id` int UNIQUE
@@ -114,80 +114,80 @@ CREATE TABLE IF NOT EXISTS  `parser`
 );
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `weekly_repeat`
-    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_template` (`id`);
+ALTER TABLE `weekly_repeats`
+    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_templates` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `monthly_repeat`
-    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_template` (`id`);
+ALTER TABLE `monthly_repeats`
+    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_templates` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `schedule`
-    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_template` (`id`);
+ALTER TABLE `schedules`
+    ADD FOREIGN KEY (`time_template_id`) REFERENCES `time_templates` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `schedule_command_ref`
-    ADD FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`id`);
+ALTER TABLE `schedule_command`
+    ADD FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `schedule_command_ref`
-    ADD FOREIGN KEY (`command_id`) REFERENCES `command` (`id`);
+ALTER TABLE `schedule_command`
+    ADD FOREIGN KEY (`command_id`) REFERENCES `commands` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `https_command`
-    ADD FOREIGN KEY (`command_id`) REFERENCES `command` (`id`);
+ALTER TABLE `https_commands`
+    ADD FOREIGN KEY (`command_id`) REFERENCES `commands` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `https_command`
+ALTER TABLE `https_commands`
     ADD FOREIGN KEY (`parser_id`) REFERENCES `parser` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `snmp_command`
-    ADD FOREIGN KEY (`command_id`) REFERENCES `command` (`id`);
+ALTER TABLE `snmp_commands`
+    ADD FOREIGN KEY (`command_id`) REFERENCES `commands` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `socket_command`
-    ADD FOREIGN KEY (`command_id`) REFERENCES `command` (`id`);
+ALTER TABLE `socket_commands`
+    ADD FOREIGN KEY (`command_id`) REFERENCES `commands` (`id`);
 -- +goose StatementEnd
 -- +goose StatementBegin
-ALTER TABLE `websocket_command`
-    ADD FOREIGN KEY (`command_id`) REFERENCES `command` (`id`);
+ALTER TABLE `websocket_commands`
+    ADD FOREIGN KEY (`command_id`) REFERENCES `commands` (`id`);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS weekly_repeat;
+DROP TABLE IF EXISTS weekly_repeats;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS monthly_repeat;
+DROP TABLE IF EXISTS monthly_repeats;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS schedule_command_ref;
+DROP TABLE IF EXISTS schedule_command;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS https_command;
+DROP TABLE IF EXISTS https_commands;
 -- +goose StatementEnd
 -- +goose StatementBegin
 DROP TABLE IF EXISTS parser;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS header_template;
+DROP TABLE IF EXISTS header_templates;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS socket_command;
+DROP TABLE IF EXISTS socket_commands;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS snmp_command;
+DROP TABLE IF EXISTS snmp_commands;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS websocket_command;
+DROP TABLE IF EXISTS websocket_commands;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS command;
+DROP TABLE IF EXISTS commands;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS schedules;
 -- +goose StatementEnd
 -- +goose StatementBegin
-DROP TABLE IF EXISTS time_template;
+DROP TABLE IF EXISTS time_templates;
 -- +goose StatementEnd

@@ -6,35 +6,27 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"new_command/app"
 	"new_command/app/database"
+	"new_command/app/logFile"
 	"new_command/config"
+	"new_command/model"
+	"new_command/model/time_template"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"time"
 )
 
 var (
-	Trace        *log.Logger
-	Info         *log.Logger
-	Error        *log.Logger
 	ServerConfig *config.ServerConfig
+	mainLog      logFile.LogFile
 )
 
 // 初始化配置
 func init() {
 	// log配置
-	newPath := filepath.Join(".", "log")
-	_ = os.MkdirAll(newPath, os.ModePerm)
-	file, err := os.OpenFile("./log/main.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal("can not open log file: " + err.Error())
-	}
-
-	Trace = log.New(os.Stdout, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
-	Info = log.New(io.MultiWriter(file, os.Stdout), "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	Error = log.New(io.MultiWriter(file, os.Stdout), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	mainLog = logFile.NewLogFile("", "main.log")
 }
 
 func init() {
@@ -43,17 +35,20 @@ func init() {
 }
 
 func main() {
-	Info.Println("command module start")
+	mainLog.Info().Println("command module start")
 
 	// DB start
-	DB, err := database.NewDB()
+	DB, err := database.NewDB("mySQL", "DB.log")
 	if err != nil {
-		Error.Println("DB Connection failed")
+		mainLog.Error().Println("DB Connection failed")
 		panic(err)
 	} else {
-		Info.Println("DB Connection successful")
+		mainLog.Info().Println("DB Connection successful")
 	}
 	defer database.CloseDB(DB)
+
+	DB.AutoMigrate(&time_template.TimeTemplate{}, &time_template.WeeklyRepeat{},
+		&time_template.MonthlyRepeat{})
 
 	// gin start
 	ginFile, err := os.OpenFile("./log/gin.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -63,11 +58,15 @@ func main() {
 	gin.DefaultWriter = io.MultiWriter(ginFile, os.Stdout)
 	r := gin.Default()
 	gin.SetMode(gin.ReleaseMode)
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+
+	// convert model config
+	modelConfig := app.ModelConfig{
+		DB:     DB,
+		Router: r,
+	}
+	model.Inject(modelConfig)
+
+	// server
 	var sb strings.Builder
 	sb.WriteString(":")
 	sb.WriteString(ServerConfig.Port)
