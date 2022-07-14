@@ -3,7 +3,7 @@ package ping
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"new_command/app/logFile"
+	"new_command/pkg/logFile"
 	"time"
 )
 

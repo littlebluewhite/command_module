@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 	"log"
+	"path"
 	"time"
 )
 
@@ -20,8 +21,8 @@ type ServerConfig struct {
 	WriteTimeout time.Duration `mapstructure:"WRITE_TIMEOUT"`
 }
 
-// LoadConfig 讀取.env環境變數檔
-func LoadConfig[T any](myPath string, fileName string) (Config T) {
+// loadConfig 讀取.env環境變數檔
+func loadConfig[T any](myPath string, fileName string) (Config T) {
 	// 若有同名環境變量則使用環境變量
 	viper.AddConfigPath(myPath)
 	viper.SetConfigName(fileName)
@@ -36,5 +37,10 @@ func LoadConfig[T any](myPath string, fileName string) (Config T) {
 	if err != nil {
 		log.Fatal("can not load config: " + err.Error())
 	}
+	return
+}
+
+func NewConfig[T DBConfig | ServerConfig](rootPath, folder, fileName string) (cfg T) {
+	cfg = loadConfig[T](path.Join(rootPath, folder), fileName)
 	return
 }

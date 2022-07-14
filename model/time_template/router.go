@@ -3,11 +3,15 @@ package time_template
 func InitRoutes(c HandlerConfig) {
 
 	h := Handler{
-		DB: c.DB,
+		DB:       c.DB,
+		Response: c.Response,
 	}
 
 	//set api
 	g := c.R.Group("/time_template")
 
-	g.POST("/", h.AddTimeTemplate)
+	g.GET("/api", h.GetTimeTemplates)
+	g.GET("/api/:id", h.GetTimeTemplateById)
+	g.POST("/api", h.AddTimeTemplate)
+	g.PATCH("/api/:id", h.UpdateTimeTemplate)
 }

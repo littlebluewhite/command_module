@@ -2,21 +2,29 @@ package time_template
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 )
 
-func checkAddTimeTemplate(c *gin.Context) (entry *TimeTemplate, err error) {
-	entry = &TimeTemplate{}
-	if err = c.ShouldBindJSON(entry); err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	ch := make(chan error)
+func checkTimeTemplate(entry *TimeTemplate) (err error) {
+	ch := make(chan error, 3)
+	defer close(ch)
 	go func(entry *TimeTemplate, ch chan error) {
 		ch <- entry.CheckRepeatType()
 	}(entry, ch)
-	if err = <-ch; err != nil {
-		return nil, err
+	go func(entry *TimeTemplate, ch chan error) {
+		ch <- entry.CheckTime()
+	}(entry, ch)
+	go func(entry *TimeTemplate, ch chan error) {
+		ch <- entry.CheckDate()
+	}(entry, ch)
+	for i := 0; i < 3; i++ {
+		select {
+		case e := <-ch:
+			if e != nil {
+				entry = nil
+				err = e
+				fmt.Println(err)
+			}
+		}
 	}
 	return
 }

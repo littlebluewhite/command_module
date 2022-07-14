@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"new_command/app"
 	"new_command/app/database"
-	"new_command/app/logFile"
 	"new_command/config"
+	"new_command/middleware"
 	"new_command/model"
-	"new_command/model/time_template"
+	"new_command/pkg/logFile"
 	"os"
 	"os/signal"
 	"strings"
@@ -19,8 +19,7 @@ import (
 )
 
 var (
-	ServerConfig *config.ServerConfig
-	mainLog      logFile.LogFile
+	mainLog logFile.LogFile
 )
 
 // 初始化配置
@@ -29,26 +28,27 @@ func init() {
 	mainLog = logFile.NewLogFile("", "main.log")
 }
 
-func init() {
-	//server config
-	ServerConfig = config.LoadConfig[*(config.ServerConfig)]("./evn", "server")
-}
-
 func main() {
 	mainLog.Info().Println("command module start")
 
 	// DB start
-	DB, err := database.NewDB("mySQL", "DB.log")
+	DB, err := database.NewDB("mySQL", "DB.log", "db")
 	if err != nil {
 		mainLog.Error().Println("DB Connection failed")
 		panic(err)
 	} else {
 		mainLog.Info().Println("DB Connection successful")
 	}
-	defer database.CloseDB(DB)
-
-	DB.AutoMigrate(&time_template.TimeTemplate{}, &time_template.WeeklyRepeat{},
-		&time_template.MonthlyRepeat{})
+	defer func() {
+		closeErr := database.CloseDB(DB)
+		if closeErr != nil {
+			if err == nil {
+				err = closeErr
+			} else {
+				log.Println("Error occurred while closing the DB :", closeErr)
+			}
+		}
+	}()
 
 	// gin start
 	ginFile, err := os.OpenFile("./log/gin.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -57,6 +57,10 @@ func main() {
 	}
 	gin.DefaultWriter = io.MultiWriter(ginFile, os.Stdout)
 	r := gin.Default()
+
+	// cors middleware
+	r.Use(middleware.CORSMiddleware())
+
 	gin.SetMode(gin.ReleaseMode)
 
 	// convert model config
@@ -65,6 +69,9 @@ func main() {
 		Router: r,
 	}
 	model.Inject(modelConfig)
+
+	// server config
+	ServerConfig := config.NewConfig[config.ServerConfig](".", "env", "server")
 
 	// server
 	var sb strings.Builder
