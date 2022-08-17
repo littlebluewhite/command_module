@@ -1,0 +1,796 @@
+definitions:
+  command.SwaggerCreate:
+    properties:
+      description:
+        example: describe something
+        type: string
+      https_command:
+        $ref: '#/definitions/https_command.SwaggerCreate'
+      name:
+        example: test
+        type: string
+      protocol:
+        example: http
+        type: string
+    required:
+    - description
+    - https_command
+    - name
+    - protocol
+    type: object
+  command.SwaggerResponse:
+    properties:
+      created_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      description:
+        example: describe something
+        type: string
+      https_command:
+        $ref: '#/definitions/https_command.SwaggerResponse'
+      id:
+        example: 1
+        type: integer
+      name:
+        example: test
+        type: string
+      protocol:
+        example: http
+        type: string
+      updated_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+    required:
+    - created_at
+    - description
+    - https_command
+    - id
+    - name
+    - protocol
+    - updated_at
+    type: object
+  command.SwaggerUpdate:
+    properties:
+      description:
+        example: describe something
+        type: string
+      https_command:
+        $ref: '#/definitions/https_command.SwaggerUpdate'
+      name:
+        example: test
+        type: string
+      protocol:
+        example: http
+        type: string
+    type: object
+  header_template.SwaggerCreate:
+    properties:
+      data:
+        type: object
+      name:
+        type: string
+    required:
+    - data
+    - name
+    type: object
+  header_template.SwaggerResponse:
+    properties:
+      data:
+        type: object
+      id:
+        example: 1
+        type: integer
+      name:
+        type: string
+    required:
+    - data
+    - id
+    - name
+    type: object
+  header_template.SwaggerUpdate:
+    properties:
+      data:
+        type: object
+      name:
+        type: string
+    type: object
+  https_command.SwaggerCreate:
+    properties:
+      authorization_type:
+        example: token
+        type: string
+      body:
+        type: object
+      body_type:
+        example: json
+        type: string
+      header:
+        type: object
+      method:
+        example: POST
+        type: string
+      url:
+        example: http://localhost:9800/api
+        type: string
+    required:
+    - method
+    - url
+    type: object
+  https_command.SwaggerResponse:
+    properties:
+      authorization_type:
+        example: token
+        type: string
+      body:
+        type: object
+      body_type:
+        example: json
+        type: string
+      command_id:
+        example: 1
+        type: integer
+      header:
+        type: object
+      id:
+        example: 1
+        type: integer
+      method:
+        example: "1"
+        type: string
+      url:
+        example: http://localhost:9800/api
+        type: string
+    required:
+    - authorization_type
+    - body
+    - body_type
+    - command_id
+    - header
+    - id
+    - method
+    - url
+    type: object
+  https_command.SwaggerUpdate:
+    properties:
+      authorization_type:
+        example: token
+        type: string
+      body:
+        type: object
+      body_type:
+        example: json
+        type: string
+      header:
+        type: object
+      method:
+        example: POST
+        type: string
+      url:
+        example: http://localhost:9800/api
+        type: string
+    type: object
+  schedule.SwaggerCreate:
+    properties:
+      command_id:
+        example: 1
+        type: integer
+      description:
+        example: describe something
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      name:
+        example: test
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerCreate'
+    required:
+    - command_id
+    - description
+    - enabled
+    - name
+    - time_data
+    type: object
+  schedule.SwaggerResponse:
+    properties:
+      command:
+        $ref: '#/definitions/command.SwaggerResponse'
+      command_id:
+        example: 1
+        type: integer
+      created_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      description:
+        example: describe something
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      id:
+        example: 1
+        type: integer
+      name:
+        example: test
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerResponse'
+      time_data_id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+    required:
+    - command
+    - command_id
+    - created_at
+    - description
+    - enabled
+    - id
+    - name
+    - time_data
+    - time_data_id
+    - updated_at
+    type: object
+  schedule.SwaggerUpdate:
+    properties:
+      command_id:
+        example: 1
+        type: integer
+      description:
+        example: describe something
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      name:
+        example: test
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerUpdate'
+    type: object
+  time_data.SwaggerCreate:
+    properties:
+      condition:
+        items:
+          type: integer
+        type: array
+      condition_type:
+        example: weekly_day
+        type: string
+      end_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      end_time:
+        example: "21:33:22"
+        type: string
+      interval_seconds:
+        example: 5
+        type: integer
+      repeat_type:
+        example: weekly
+        type: string
+      start_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      start_time:
+        example: "00:00:22"
+        type: string
+    required:
+    - end_date
+    - repeat_type
+    - start_date
+    type: object
+  time_data.SwaggerResponse:
+    properties:
+      condition:
+        items:
+          type: integer
+        type: array
+      condition_type:
+        example: weekly_day
+        type: string
+      end_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      end_time:
+        example: "21:33:22"
+        type: string
+      id:
+        example: 1
+        type: integer
+      interval_seconds:
+        example: 5
+        type: integer
+      repeat_type:
+        example: weekly
+        type: string
+      start_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      start_time:
+        example: "00:00:22"
+        type: string
+    required:
+    - condition
+    - condition_type
+    - end_date
+    - end_time
+    - id
+    - interval_seconds
+    - repeat_type
+    - start_date
+    - start_time
+    type: object
+  time_data.SwaggerUpdate:
+    properties:
+      condition:
+        items:
+          type: integer
+        type: array
+      condition_type:
+        example: weekly_day
+        type: string
+      end_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      end_time:
+        example: "21:33:22"
+        type: string
+      interval_seconds:
+        example: 5
+        type: integer
+      repeat_type:
+        example: weekly
+        type: string
+      start_date:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      start_time:
+        example: "00:00:22"
+        type: string
+    type: object
+  time_template.SwaggerCreate:
+    properties:
+      name:
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerCreate'
+    required:
+    - name
+    - time_data
+    type: object
+  time_template.SwaggerResponse:
+    properties:
+      created_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerResponse'
+      time_data_id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2022-08-15T06:36:36Z"
+        type: string
+    required:
+    - created_at
+    - id
+    - name
+    - time_data
+    - time_data_id
+    - updated_at
+    type: object
+  time_template.SwaggerUpdate:
+    properties:
+      name:
+        type: string
+      time_data:
+        $ref: '#/definitions/time_data.SwaggerUpdate'
+    type: object
+host: localhost:5487
+info:
+  contact:
+    email: wwilson008@gmail.com
+    name: Wilson
+    url: https://github.com/littlebluewhite
+  description: This is a schedule-command server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Schedule-Command swagger API
+  version: "1.0"
+paths:
+  /command/api:
+    get:
+      description: Get all commands
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/command.SwaggerResponse'
+            type: array
+      summary: Show all commands
+      tags:
+      - command
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: command body
+        in: body
+        name: command
+        required: true
+        schema:
+          $ref: '#/definitions/command.SwaggerCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created success
+          schema:
+            type: string
+      summary: Create commands
+      tags:
+      - command
+  /command/api/{id}:
+    delete:
+      parameters:
+      - description: command id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete successfully
+          schema:
+            type: string
+      summary: Delete commands
+      tags:
+      - command
+    get:
+      description: Get commands by id
+      parameters:
+      - description: command id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.SwaggerResponse'
+      summary: Show commands
+      tags:
+      - command
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: command id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: modify command body
+        in: body
+        name: command
+        required: true
+        schema:
+          $ref: '#/definitions/command.SwaggerUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.SwaggerResponse'
+      summary: Update commands
+      tags:
+      - command
+  /header_template/api:
+    get:
+      description: Get all header templates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/header_template.SwaggerResponse'
+            type: array
+      summary: Show all header templates
+      tags:
+      - header_template
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: header template body
+        in: body
+        name: header_template
+        required: true
+        schema:
+          $ref: '#/definitions/header_template.SwaggerCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Create header templates
+      tags:
+      - header_template
+  /header_template/api/{id}:
+    delete:
+      parameters:
+      - description: header template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Delete header templates
+      tags:
+      - header_template
+    get:
+      description: Get header templates by id
+      parameters:
+      - description: header template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/header_template.SwaggerResponse'
+      summary: Show header templates
+      tags:
+      - header_template
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: header template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: modify header template body
+        in: body
+        name: header_template
+        required: true
+        schema:
+          $ref: '#/definitions/header_template.SwaggerUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/header_template.SwaggerResponse'
+      summary: Update header templates
+      tags:
+      - header_template
+  /schedule/api:
+    get:
+      description: Get all schedules
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schedule.SwaggerResponse'
+            type: array
+      summary: Show all schedules
+      tags:
+      - schedule
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: schedule body
+        in: body
+        name: schedule
+        required: true
+        schema:
+          $ref: '#/definitions/schedule.SwaggerCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created success
+          schema:
+            type: string
+      summary: Create schedules
+      tags:
+      - schedule
+  /schedule/api/{id}:
+    delete:
+      parameters:
+      - description: schedule id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete successfully
+          schema:
+            type: string
+      summary: Delete schedules
+      tags:
+      - schedule
+    get:
+      description: Get schedules by id
+      parameters:
+      - description: schedule id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schedule.SwaggerResponse'
+      summary: Show schedules
+      tags:
+      - schedule
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: schedule id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: modify schedule body
+        in: body
+        name: schedule
+        required: true
+        schema:
+          $ref: '#/definitions/schedule.SwaggerUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schedule.SwaggerResponse'
+      summary: Update schedules
+      tags:
+      - schedule
+  /time_template/api:
+    get:
+      description: Get all time templates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/time_template.SwaggerResponse'
+            type: array
+      summary: Show all time templates
+      tags:
+      - time_template
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: time template body
+        in: body
+        name: time_template
+        required: true
+        schema:
+          $ref: '#/definitions/time_template.SwaggerCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created success
+          schema:
+            type: string
+      summary: Create time templates
+      tags:
+      - time_template
+  /time_template/api/{id}:
+    delete:
+      parameters:
+      - description: time template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: delete successfully
+          schema:
+            type: string
+      summary: Delete time templates
+      tags:
+      - time_template
+    get:
+      description: Get time templates by id
+      parameters:
+      - description: time template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/time_template.SwaggerResponse'
+      summary: Show time templates
+      tags:
+      - time_template
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: time template id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: modify time template body
+        in: body
+        name: time_template
+        required: true
+        schema:
+          $ref: '#/definitions/time_template.SwaggerUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/time_template.SwaggerResponse'
+      summary: Update time templates
+      tags:
+      - time_template
+swagger: "2.0"

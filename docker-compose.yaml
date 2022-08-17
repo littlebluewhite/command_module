@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: schedule
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: wilson
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - ./deploy/migrate/init.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./deploy/migrate/sql_mount:/var/lib/mysql
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  schedule:
+    build:
+      context: .
+#      dockerfile: deploy/api/linux/Dockerfile
+      dockerfile: deploy/api/windows/Dockerfile
+    environment:
+      DB_HOST: mysql
+      DB_USER: wilson
+      DB_PASSWORD: 123456
+      DB_DB: schedule
+    ports:
+      - 5487:5487
+    volumes:
+      - ./deploy/api/dockerLog:/app/log
+    depends_on:
+      mysql:
+        condition: service_healthy
