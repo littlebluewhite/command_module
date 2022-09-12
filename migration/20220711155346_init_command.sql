@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `time_templates`
 CREATE TABLE IF NOT EXISTS `time_data`
 (
     `id`               int PRIMARY KEY AUTO_INCREMENT,
-    `repeat_type`      ENUM ('daily', 'weekly', 'monthly'),
+    `repeat_type`      ENUM ('daily', 'weekly', 'monthly', '') DEFAULT '',
     `start_date`       date NOT NULL,
     `end_date`         date,
     `start_time`       time NOT NULL,

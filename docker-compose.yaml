@@ -21,8 +21,8 @@ services:
   schedule:
     build:
       context: .
-#      dockerfile: deploy/api/linux/Dockerfile
-      dockerfile: deploy/api/windows/Dockerfile
+      dockerfile: deploy/api/linux/Dockerfile
+#      dockerfile: deploy/api/windows/Dockerfile
     environment:
       DB_HOST: mysql
       DB_USER: wilson

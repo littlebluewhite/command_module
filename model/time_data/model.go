@@ -50,9 +50,9 @@ func (ct ConditionType) Value() (driver.Value, error) {
 
 type TimeData struct {
 	ID              int            `json:"id" gorm:"primaryKey;autoIncrement"`
-	RepeatType      RepeatType     `json:"repeat_type" gorm:"type:enum('daily','weekly','monthly');default:null" binding:"required"`
+	RepeatType      RepeatType     `json:"repeat_type" gorm:"type:enum('daily','weekly','monthly', '');default:''"`
 	StartDate       datatypes.Date `json:"start_date" gorm:"column:start_date;not null" binding:"required"`
-	EndDate         datatypes.Date `json:"end_date,omitempty" gorm:"column:end_date;default:9999-01-01T00:00:00+00:00"`
+	EndDate         datatypes.Date `json:"end_date,omitempty" gorm:"column:end_date;defaremiult:9999-01-01T00:00:00+00:00"`
 	StartTime       datatypes.Time `json:"start_time" gorm:"column:start_time;not null"`
 	EndTime         datatypes.Time `json:"end_time" gorm:"column:end_time;not null" binding:"required"`
 	IntervalSeconds int            `json:"interval_seconds,omitempty" gorm:"column:interval_seconds"`

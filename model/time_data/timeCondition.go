@@ -55,7 +55,7 @@ func (td *TimeData) AccessTime(t time.Time) (result bool) {
 
 func (td *TimeData) AccessConditions(t time.Time) (result bool) {
 	switch td.RepeatType {
-	case daily:
+	case daily, "":
 		result = true
 	case weekly:
 		result = td.AccessWeekly(t)
